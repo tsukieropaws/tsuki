@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tsuki</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #0f1115;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #eaeaea;
+    }
+
+    .chat-container {
+      width: 380px;
+      height: 720px;
+      background: #1a1d24;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      background: #141720;
+      border-bottom: 1px solid #22252f;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: url('profilepichigres.png') center/cover no-repeat;
+      margin-right: 12px;
+    }
+
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .status {
+      font-size: 12px;
+      color: #7c8090;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .bubble.tsuki {
+      background: #242838;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .bubble.user {
+      background: #3b82f6;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 12px;
+      background: #141720;
+      border-top: 1px solid #22252f;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: none;
+      outline: none;
+      background: #1f2330;
+      color: #eaeaea;
+      font-size: 14px;
+    }
+
+    .chat-input button {
+      margin-left: 8px;
+      padding: 0 16px;
+      border-radius: 20px;
+      border: none;
+      background: #3b82f6;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .chat-input button:hover {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="avatar"></div>
+      <div class="header-text">
+        <div class="name">Tsuki</div>
+        <div class="status">online</div>
+      </div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="bubble tsuki">Hey.</div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Message…" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('userInput');
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      addBubble(text, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        addBubble("…", 'tsuki');
+      }, 600);
+    }
+
+    function addBubble(text, sender) {
+      const div = document.createElement('div');
+      div.className = `bubble ${sender}`;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
