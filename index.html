@@ -155,15 +155,54 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    function sendMessage() {
+    async function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
+
       addMessage(text, 'user');
       input.value = '';
 
-      setTimeout(() => {
-        addMessage('…', 'tsuki');
-      }, 800);
+      // Typing indicator
+      const typingBubble = document.createElement('div');
+      typingBubble.classList.add('bubble', 'tsuki');
+      typingBubble.textContent = 'typing…';
+      messages.appendChild(typingBubble);
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const response = await fetch('http://localhost:1234/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'local-model',
+            messages: [
+              {
+                role: 'system',
+                content: "You are Tsuki. You are a real person chatting casually, not an assistant. You speak informally, naturally, sometimes playful, sometimes shy. You never explain rules, never mention AI, and never apologize unnecessarily."
+              },
+              {
+                role: 'user',
+                content: text
+              }
+            ],
+            temperature: 0.9,
+            max_tokens: 200
+          })
+        });
+
+        const data = await response.json();
+        const reply = data.choices[0].message.content;
+
+        typingBubble.remove();
+        addMessage(reply, 'tsuki');
+
+      } catch (error) {
+        typingBubble.remove();
+        addMessage("…sorry, something went wrong", 'tsuki');
+        console.error(error);
+      }
     }
 
     input.addEventListener('keydown', e => {
