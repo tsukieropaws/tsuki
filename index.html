@@ -124,4 +124,26 @@
     </div>
 
     <div class="chat-input">
-      <input type="text" id="input" placeholder="Type a message
+      <input type="text" id="input" placeholder="Type a message…">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+      if (!input.value.trim()) return;
+
+      const userBubble = document.createElement("div");
+      userBubble.className = "bubble user";
+      userBubble.textContent = input.value;
+      messages.appendChild(userBubble);
+
+      input.value = "";
+      messages.scrollTop = messages.scrollHeight;
+    }
+  </script>
+
+</body>
+</html>
