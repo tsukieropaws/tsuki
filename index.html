@@ -1,149 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Tsuki</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #1b1b1b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<title>Tsuki Chat</title>
 
-    .chat-container {
-      width: 380px;
-      height: 640px;
-      background-color: #121212;
-      border-radius: 18px;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 0 30px rgba(0,0,0,0.6);
-    }
+<style>
+body {
+  margin: 0;
+  background: #1b1b1b;
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    .chat-header {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      background-color: #181818;
-      border-bottom: 1px solid #2a2a2a;
-    }
+.chat-container {
+  width: 380px;
+  height: 640px;
+  background: #121212;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-    .chat-header img {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #181818;
+}
 
-    .chat-header span {
-      color: #5fd3cf; /* azul Tsuki */
-      font-weight: 600;
-      font-size: 16px;
-    }
+.chat-header img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
 
-    .chat-messages {
-      flex: 1;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-    }
+.chat-header span {
+  color: #5fd3cf;
+  font-weight: bold;
+}
 
-    .bubble {
-      max-width: 75%;
-      padding: 10px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      line-height: 1.4;
-    }
+.chat-messages {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
 
-    /* Tsuki */
-    .bubble.tsuki {
-      align-self: flex-start;
-      background-color: #5fd3cf; /* azul turquesa */
-      color: #0f2b2a;
-      border-bottom-left-radius: 4px;
-    }
+.bubble {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.4;
+}
 
-    /* Usuario */
-    .bubble.user {
-      align-self: flex-end;
-      background-color: #e3b34c; /* amarillo Tsuki */
-      color: #2b1d05;
-      border-bottom-right-radius: 4px;
-    }
+.bubble.tsuki {
+  align-self: flex-start;
+  background: #5fd3cf;
+  color: #0f2b2a;
+  border-bottom-left-radius: 4px;
+}
 
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      background-color: #181818;
-      border-top: 1px solid #2a2a2a;
-    }
+.bubble.user {
+  align-self: flex-end;
+  background: #e3b34c;
+  color: #2b1d05;
+  border-bottom-right-radius: 4px;
+}
 
-    .chat-input input {
-      flex: 1;
-      background-color: #101010;
-      border: 1px solid #2a2a2a;
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: #eaeaea;
-      outline: none;
-    }
+.chat-input {
+  display: flex;
+  padding: 10px;
+  gap: 8px;
+  background: #181818;
+}
 
-    .chat-input button {
-      margin-left: 8px;
-      background-color: #2a2a2a; /* botón discreto */
-      border: none;
-      border-radius: 14px;
-      padding: 0 16px;
-      color: #ccc;
-      cursor: pointer;
-    }
+.chat-input input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid #333;
+  background: #101010;
+  color: #eee;
+}
 
-    .chat-input button:hover {
-      background-color: #333;
-    }
-  </style>
+.chat-input button {
+  padding: 0 16px;
+  border-radius: 14px;
+  border: none;
+  background: #2a2a2a;
+  color: #ccc;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="chat-container">
-    <div class="chat-header">
-      <img src="profilepichigres.png" alt="Tsuki">
-      <span>Tsuki</span>
-    </div>
-
-    <div class="chat-messages" id="messages">
-      <!-- Tsuki no habla primero -->
-    </div>
-
-    <div class="chat-input">
-      <input type="text" id="input" placeholder="Type a message…">
-      <button onclick="sendMessage()">Send</button>
-    </div>
+<div class="chat-container">
+  <div class="chat-header">
+    <img src="profilepichigres.png" alt="Tsuki">
+    <span>Tsuki</span>
   </div>
 
-  <script>
-    function sendMessage() {
-      const input = document.getElementById("input");
-      const messages = document.getElementById("messages");
-      if (!input.value.trim()) return;
+  <div class="chat-messages" id="messages"></div>
 
-      const userBubble = document.createElement("div");
-      userBubble.className = "bubble user";
-      userBubble.textContent = input.value;
-      messages.appendChild(userBubble);
+  <div class="chat-input">
+    <input id="input" type="text" placeholder="Type a message…">
+    <button id="send">Send</button>
+  </div>
+</div>
 
-      input.value = "";
-      messages.scrollTop = messages.scrollHeight;
-    }
-  </script>
+<script>
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+const sendBtn = document.getElementById("send");
 
-</body>
-</html>
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keypress", e => {
+  if (e.key === "Enter") sen
