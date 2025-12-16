@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tsuki Chat</title>
+
   <style>
     body {
       margin: 0;
@@ -63,7 +64,7 @@
       flex-direction: column;
       gap: 10px;
       overflow-y: auto;
-      background: linear-gradient(180deg, #020617 0%, #020617 100%);
+      background: #020617;
     }
 
     .bubble {
@@ -72,21 +73,18 @@
       border-radius: 20px;
       font-size: 14px;
       line-height: 1.45;
-      word-wrap: break-word;
-      animation: fadeIn 0.25s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      animation: fadeIn 0.2s ease;
     }
 
     .bubble.tsuki {
-      background: #4fc3d9; /* Tsuki blue from reference */
+      background: #4fc3d9;
       color: #022c22;
       align-self: flex-start;
       border-bottom-left-radius: 6px;
-      box-shadow: 0 4px 12px rgba(79,195,217,0.25);
     }
 
     .bubble.user {
-      background: #86efac; /* chat green */
+      background: #86efac;
       color: #022c22;
       align-self: flex-end;
       border-bottom-right-radius: 6px;
@@ -111,7 +109,7 @@
 
     .input-area button {
       border: none;
-      background: #fbbf24; /* soft orange-yellow */
+      background: #fbbf24;
       color: #422006;
       padding: 0 16px;
       border-radius: 20px;
@@ -125,6 +123,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="chat-container">
     <div class="chat-header">
@@ -162,46 +161,27 @@
       addMessage(text, 'user');
       input.value = '';
 
-      // Typing indicator
-      const typingBubble = document.createElement('div');
-      typingBubble.classList.add('bubble', 'tsuki');
-      typingBubble.textContent = 'typing…';
-      messages.appendChild(typingBubble);
+      const typing = document.createElement('div');
+      typing.classList.add('bubble', 'tsuki');
+      typing.textContent = 'typing…';
+      messages.appendChild(typing);
       messages.scrollTop = messages.scrollHeight;
 
       try {
-        const response = await fetch('http://192.168.1.136:1234/v1/chat/completions', {
+        const response = await fetch('http://localhost:3000/chat', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'local-model',
-            messages: [
-              {
-                role: 'system',
-                content: "You are Tsuki. You are a real person chatting casually, not an assistant. You speak informally, naturally, sometimes playful, sometimes shy. You never explain rules, never mention AI, and never apologize unnecessarily."
-              },
-              {
-                role: 'user',
-                content: text
-              }
-            ],
-            temperature: 0.9,
-            max_tokens: 200
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
         });
 
         const data = await response.json();
-        const reply = data.choices[0].message.content;
+        typing.remove();
+        addMessage(data.reply, 'tsuki');
 
-        typingBubble.remove();
-        addMessage(reply, 'tsuki');
-
-      } catch (error) {
-        typingBubble.remove();
-        addMessage("…sorry, something went wrong", 'tsuki');
-        console.error(error);
+      } catch (e) {
+        typing.remove();
+        addMessage('…sorry, something went wrong', 'tsuki');
+        console.error(e);
       }
     }
 
